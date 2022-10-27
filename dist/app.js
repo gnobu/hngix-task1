@@ -8,6 +8,12 @@ const PORT = 5000;
 const URL = 'http://localhost:5000';
 const app = (0, express_1.default)();
 app.get('/', (req, res) => {
-    res.send('Hello World');
+    const task1 = {
+        slackUsername: 'gnobu',
+        backend: true,
+        age: 28,
+        bio: "Nothing to see here. Just a MERN stack developer"
+    };
+    res.json(task1);
 });
 app.listen(PORT, () => { console.log(`App is running on ${URL}`); });
