@@ -1,10 +1,13 @@
 require('dotenv').config()
 import express from "express"
+import cors from "cors"
 
 const PORT = process.env.PORT || 5000
 const URL = process.env.URL || 'http://localhost:5000'
 
 const app = express()
+
+app.use(cors())
 
 app.get('/', (req, res) => {
     res.send(`Head to "${URL}/api/task1" to get the task1 response`)
