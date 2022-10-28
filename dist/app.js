@@ -7,7 +7,7 @@ const express_1 = __importDefault(require("express"));
 const PORT = 5000;
 const URL = 'http://localhost:5000';
 const app = (0, express_1.default)();
-app.get('/', (req, res) => {
+app.get('/api/task1', (req, res) => {
     const task1 = {
         slackUsername: 'gnobu',
         backend: true,
