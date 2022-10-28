@@ -5,7 +5,7 @@ const URL = 'http://localhost:5000'
 
 const app = express()
 
-app.get('/', (req, res) => {
+app.get('/api/task1', (req, res) => {
     const task1: {
         slackUsername: string;
         backend: boolean;
