@@ -22,6 +22,7 @@ class App {
 
     private initializeMiddleware() {
         this.app.use(cors())
+        this.app.use(express.json())
     }
 
     private initializeControllers(controllers: IController[]) {
