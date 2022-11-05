@@ -18,6 +18,7 @@ class App {
     }
     initializeMiddleware() {
         this.app.use((0, cors_1.default)());
+        this.app.use(express_1.default.json());
     }
     initializeControllers(controllers) {
         controllers.forEach(controller => {
