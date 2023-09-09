@@ -24,7 +24,7 @@ class Hng implements IController {
         const task1 = {
             slack_name: query.slack_name,
             current_day: WEEKDAYS[currentDate.getDay()],
-            utc_time: currentDate,
+            utc_time: currentDate.toISOString().split('.')[0]+'Z',
             track: query.track,
             github_file_url: process.env.GITHUB_FILE_URL,
             github_repo_url: process.env.GITHUB_REPO_URL,
