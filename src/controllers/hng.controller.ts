@@ -23,7 +23,7 @@ class Hng implements IController {
         const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
         const task1 = {
             slack_name: query.slack_name,
-            current_day: WEEKDAYS.at(currentDate.getDay()),
+            current_day: WEEKDAYS[currentDate.getDay()],
             utc_time: currentDate,
             track: query.track,
             github_file_url: process.env.GITHUB_FILE_URL,
