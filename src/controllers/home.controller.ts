@@ -1,5 +1,5 @@
-import express from "express";
-import { IController } from "../interfaces/controller.interface";
+import express from "express"
+import { IController } from "../interfaces/controller.interface"
 
 class Home implements IController {
     public path = '/'
@@ -16,7 +16,7 @@ class Home implements IController {
     }
     
     private getHome = (req: express.Request, res: express.Response) => {
-        res.send(`Head to "${this.URL}/zuri/task1" to get the task1 response`)
+        res.send(`Head to "${this.URL}/hng/task1" to get the task1 response`)
     }
 }
 

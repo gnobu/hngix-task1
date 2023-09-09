@@ -1,15 +1,21 @@
 require('dotenv').config()
-import App from "./app";
-import Home from "./controllers/home.controller";
-import Zuri from "./controllers/zuri.controller";
 
-// Variable declarations
-const URL = process.env.URL || 'http://localhost:5000'
-const PORT = process.env.PORT || 5000
+import App from "./app"
+import Home from "./controllers/home.controller"
+import Zuri from "./controllers/hng.controller"
+import validateEnv from "./utils/validateENV"
 
-const app = new App([
-    new Zuri(),
-    new Home(URL),
-], PORT, URL)
+(async () => {
+    // ensure required env variables are present
+    validateEnv()
+    // Other variables declaration
+    const URL = process.env.URL || 'http://localhost:5000'
+    const PORT = process.env.PORT || 5000
 
-app.listen()
+    const app = new App([
+        new Zuri(),
+        new Home(URL),
+    ], PORT, URL)
+
+    app.listen()
+})()

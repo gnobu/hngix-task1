@@ -1,9 +1,9 @@
 import * as express from 'express'
-import { IController, IOperationBody, OPERATION } from '../interfaces/controller.interface';
-import { add, divide, multiply, subtract } from '../services/math.service';
+import { IController, IOperationBody, OPERATION } from '../interfaces/controller.interface'
+import { add, divide, multiply, subtract } from '../services/math.service'
 
-class Zuri implements IController {
-    public path = '/zuri'
+class Hng implements IController {
+    public path = '/hng'
     public router = express.Router()
 
     constructor() {
@@ -16,16 +16,18 @@ class Zuri implements IController {
     }
 
     private task1 = (req: express.Request, res: express.Response) => {
-        const task1: {
-            slackUsername: string;
-            backend: boolean;
-            age: number;
-            bio: String
-        } = {
-            slackUsername: 'gnobu',
-            backend: true,
-            age: 28,
-            bio: "Nothing to see here. Just a MERN stack developer"
+        const query = req.query
+
+        const currentDate = new Date()
+        const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+        const task1 = {
+            slack_name: query.slack_name,
+            current_day: WEEKDAYS.at(currentDate.getDay()),
+            utc_time: currentDate,
+            track: query.track,
+            github_file_url: process.env.GITHUB_FILE_URL,
+            github_repo_url: process.env.GITHUB_REPO_URL,
+            status_code: 200,
         }
         res.json(task1)
     }
@@ -33,11 +35,6 @@ class Zuri implements IController {
     private task2 = (req: express.Request, res: express.Response) => {
         const quest: IOperationBody = req.body
 
-        // const isAdd = (/(add)|(sum)/i).test(quest.operation_type)
-        // const isMinus = (/(minus)|(subt)|(diff)/i).test(quest.operation_type)
-        // const isMult = (/(mult)|(times)/i).test(quest.operation_type)
-        // const isDivide = (/(div)|(ratio)/i).test(quest.operation_type)
-        // const nums = quest.operation_type.match(/\d+/g)
         const isAdd = (quest.operation_type).match(/(ad\w+)|(sum\w+)/ig)
         const isMinus = (quest.operation_type).match(/(minus)|(subtract)|(difference)/ig)
         const isMult = (quest.operation_type).match(/(mult\w+)|(times)/ig)
@@ -77,4 +74,4 @@ class Zuri implements IController {
     }
 }
 
-export default Zuri
+export default Hng

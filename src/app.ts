@@ -1,35 +1,38 @@
 import express from "express"
 import cors from "cors"
-import { IController } from "./interfaces/controller.interface"
 
-class App {
-    public app: express.Application
+import { IController } from "./interfaces/controller.interface"
+import { errHandler } from "./middleware/errorHandler.middleware"
+
+export default class App {
+    private _app
     PORT: number | string
     URL: string
 
-    constructor(controllers: IController[], PORT: number | string = 5000, URL: string = 'http://localhost:5000') {
-        this.app = express()
+    constructor(controllers: IController[], PORT: number | string = 5000, URL: string = `http://localhost:${PORT}`) {
+        this._app = express()
         this.PORT = PORT
         this.URL = URL
 
-        this.initializeMiddleware()
-        this.initializeControllers(controllers)
+        this._initializeMiddleware()
+        this._initializeControllers(controllers)
+        this._initializeErrorMiddleware()
     }
-
     public listen() {
-        this.app.listen(this.PORT, () => { console.log(`App is running on ${this.URL}`) })
-    }
-
-    private initializeMiddleware() {
-        this.app.use(cors())
-        this.app.use(express.json())
-    }
-
-    private initializeControllers(controllers: IController[]) {
-        controllers.forEach(controller => {
-            this.app.use('/', controller.router)
+        this._app.listen(this.PORT, () => {
+            console.log(`App is running on ${this.URL}`)
         })
     }
+    private _initializeMiddleware() {
+        this._app.use(express.json())
+        this._app.use(cors())
+    }
+    private _initializeErrorMiddleware() {
+        this._app.use(errHandler)
+    }
+    private _initializeControllers(controllers: IController[]) {
+        for (let controller of controllers) {
+            this._app.use('/', controller.router)
+        }
+    }
 }
-
-export default App
