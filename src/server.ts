@@ -2,7 +2,7 @@ require('dotenv').config()
 
 import App from "./app"
 import Home from "./controllers/home.controller"
-import Zuri from "./controllers/hng.controller"
+import Hng from "./controllers/hng.controller"
 import validateEnv from "./utils/validateENV"
 
 (async () => {
@@ -13,7 +13,7 @@ import validateEnv from "./utils/validateENV"
     const PORT = process.env.PORT || 5000
 
     const app = new App([
-        new Zuri(),
+        new Hng(),
         new Home(URL),
     ], PORT, URL)
 
