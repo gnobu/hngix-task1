@@ -5,4 +5,4 @@ To run the server locally,
 2. run:
   `npm run start:dev` for compiled code
   or `npm run dev` to run the typescript version
-3. Head to <url>/hng/task1 in order to see the response.
+3. Head to <url>/hng/task1 in order to see task1 response.
