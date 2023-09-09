@@ -4,7 +4,7 @@ import { IController } from '../interfaces/controller.interface'
 // import { add, divide, multiply, subtract } from '../utils/math.util'
 
 class Hng implements IController {
-    public path = '/hng'
+    public path = ''
     public router = express.Router()
 
     constructor() {
@@ -12,7 +12,7 @@ class Hng implements IController {
     }
 
     public initializeRoutes() {
-        this.router.get(`${this.path}/task1`, this.task1)
+        this.router.get(`${this.path}/api`, this.task1)
         // this.router.post(`${this.path}/task2`, this.task2)
     }
 
