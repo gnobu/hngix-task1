@@ -1,22 +1,21 @@
 import { ErrorRequestHandler } from "express"
 import { logEvent } from "../utils/logger.util"
 import isDevMode from "../utils/checkNodeEnv.util"
+import { CustomError } from "../errors/custom.error"
 
-export const errHandler: ErrorRequestHandler = (error: Error, req, res, next) => {
-    const errMsg = `${error.name}: ${error.message}\t${req.method}\t${req.url}\t${req.headers.origin}`
+export const errHandler: ErrorRequestHandler = (err, req, res, next) => {
+    // Save to log file
+    const errMsg = `${err.name}: ${err.message}\t${req.method}\t${req.url}\t${req.headers.origin}`
     logEvent(errMsg, 'errLog.log')
 
-    isDevMode() && console.log(res.statusCode, error)
-    
-    if (error.message === 'Forbidden') {
-        return res.status(403).json({ message: "Forbidden" })
+    // Log to console in dev mode
+    isDevMode() && console.log(err)
+
+    if (err instanceof CustomError) {
+        return res.status(err.statusCode).json({ errors: err.serializeErrors() })
     }
 
-    const status = (res.statusCode !== 200) ? res.statusCode : 500 // return 500 if no status code
-
-    if (error.name === 'MongooseServerSelectionError') {
-        return res.status(status).json({ message: "Server Error" })
-    }
-
-    res.status(status).json({ message: error.message })
+    res.status(500).json({
+        errors: [{ message: 'Something went wrong' }]
+    })
 }
