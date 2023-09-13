@@ -3,7 +3,7 @@ require('dotenv').config()
 import App from "./app"
 import Home from "./controllers/home.controller"
 import Hng from "./controllers/hng.controller"
-import validateEnv from "./utils/validateENV"
+import validateEnv from "./utils/validateENV.util"
 
 (async () => {
     // ensure required env variables are present

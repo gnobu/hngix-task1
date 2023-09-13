@@ -1,6 +1,6 @@
 import { ErrorRequestHandler } from "express"
-import { logEvent } from "../utils/logger"
-import isDevMode from "../utils/checkNodeEnv"
+import { logEvent } from "../utils/logger.util"
+import isDevMode from "../utils/checkNodeEnv.util"
 
 export const errHandler: ErrorRequestHandler = (error: Error, req, res, next) => {
     const errMsg = `${error.name}: ${error.message}\t${req.method}\t${req.url}\t${req.headers.origin}`
