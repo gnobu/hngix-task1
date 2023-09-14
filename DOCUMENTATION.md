@@ -1,5 +1,12 @@
 # API Documentation
-This endpoint is used to perform CRUD operations on a "person" resource. See the list of request endpoints and their specifications below. Examples of successful requests and a few failed requests are also provided in the response fields. 
+This endpoint is used to perform CRUD operations on a "person" resource. See the list of request endpoints and their specifications below. Examples of successful requests and a few failed requests are also provided in the response fields.
+
+A prettier version of the documentation can be found [here](https://documenter.getpostman.com/view/21264552/2s9YC5xrym).
+Also, relevant UML diagrams of the models, classes and relationships can be viewed [here](https://whimsical.com/hngx-task-2-HHh1vVFJvT9YFjmfSNqGW).
+
+You can also check out the [live](https://gnobu-hngx.onrender.com/api/) API.
+
+Note: when running locally, the {{baseUrl}} variable should point to localhost:5000.
 
 ```
 {
