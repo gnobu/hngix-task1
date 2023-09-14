@@ -1,8 +1,8 @@
-import * as express from 'express'
+import express from 'express'
 import { IController } from '../interfaces/controller.interface'
 
-class Hng implements IController {
-    public path = ''
+class Task1Controller implements IController {
+    public path = '/api'
     public router = express.Router()
 
     constructor() {
@@ -10,7 +10,7 @@ class Hng implements IController {
     }
 
     public initializeRoutes() {
-        this.router.get(`${this.path}/api`, this.task1)
+        this.router.get(`${this.path}/task1`, this.task1)
     }
 
     private task1 = (req: express.Request, res: express.Response) => {
@@ -31,4 +31,4 @@ class Hng implements IController {
     }
 }
 
-export default Hng
+export default Task1Controller

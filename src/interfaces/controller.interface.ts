@@ -1,6 +1,7 @@
 import { Router } from "express"
 
 export interface IController {
-    path: string;
+    path: string
     router: Router
+    initializeRoutes(): void
 }

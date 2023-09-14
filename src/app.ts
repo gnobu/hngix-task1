@@ -1,8 +1,10 @@
 import express from "express"
+import 'express-async-errors'
 import cors from "cors"
 
 import { IController } from "./interfaces/controller.interface"
 import { errHandler } from "./middleware/errorHandler.middleware"
+import { NotFoundError } from "./errors/not-found.error"
 
 export default class App {
     private _app
@@ -34,5 +36,8 @@ export default class App {
         for (let controller of controllers) {
             this._app.use('/', controller.router)
         }
+        this._app.all('*', async (req, res) => {
+            throw new NotFoundError()
+        })
     }
 }

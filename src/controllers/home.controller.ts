@@ -16,7 +16,7 @@ class Home implements IController {
     }
     
     private getHome = (req: express.Request, res: express.Response) => {
-        res.send(`Head to "${this.URL}/hng/task1" to get the task1 response`)
+        res.send(`Head to "${this.URL}/api/task1" to get the task1 response`)
     }
 }
 
