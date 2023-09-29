@@ -5,6 +5,7 @@ import cors from "cors"
 import { IController } from "./interfaces/controller.interface"
 import { errHandler } from "./middleware/errorHandler.middleware"
 import { NotFoundError } from "./errors/not-found.error"
+import path from "path"
 
 export default class App {
     private _app
@@ -28,6 +29,7 @@ export default class App {
     private _initializeMiddleware() {
         this._app.use(express.json())
         this._app.use(cors())
+        this._app.use('/video', express.static(path.join(__dirname, '..', 'uploads')))
     }
     private _initializeErrorMiddleware() {
         this._app.use(errHandler)

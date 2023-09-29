@@ -5,6 +5,7 @@ function validateEnv() {
         GITHUB_FILE_URL: str(),
         GITHUB_REPO_URL: str(),
         DB_URI: str(),
+        BASE_URL: str(),
         CLOUDNAME: str(),
         CLOUDAPIKEY: str(),
         CLOUDINARYSECRET: str(),

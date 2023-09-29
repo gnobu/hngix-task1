@@ -42,8 +42,8 @@ export class VideoController implements IController {
         //         .json({ message: "Video uploaded, but without backup", url: newPath })
         // }
 
-        console.log(__dirname)
-        res.status(httpStatus.CREATED).json({ message: "Video uploaded successfully", url: newPath })
+        const publicURL = `${process.env.BASE_URL}/video/${title + extension}`
+        res.status(httpStatus.CREATED).json({ message: "Video uploaded successfully", url: publicURL })
     }
     // TODO: Fetch all videos
     // TODO: Fetch single video
