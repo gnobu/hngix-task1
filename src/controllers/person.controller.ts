@@ -8,7 +8,7 @@ import { NotFoundError } from '../errors/not-found.error'
 
 export class PersonController implements IController {
     router = express.Router()
-    path = '/api'
+    path = '/person'
     constructor(private _personService: PersonService) {
         this.initializeRoutes()
     }

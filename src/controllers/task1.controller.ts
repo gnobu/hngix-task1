@@ -2,7 +2,7 @@ import express from 'express'
 import { IController } from '../interfaces/controller.interface'
 
 class Task1Controller implements IController {
-    public path = '/api'
+    public path = '/task1'
     public router = express.Router()
 
     constructor() {
@@ -10,7 +10,7 @@ class Task1Controller implements IController {
     }
 
     public initializeRoutes() {
-        this.router.get(`${this.path}/task1`, this.task1)
+        this.router.get(this.path, this.task1)
     }
 
     private task1 = (req: express.Request, res: express.Response) => {

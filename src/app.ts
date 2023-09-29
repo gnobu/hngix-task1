@@ -36,7 +36,7 @@ export default class App {
     }
     private _initializeControllers(controllers: IController[]) {
         for (let controller of controllers) {
-            this._app.use('/', controller.router)
+            this._app.use('/api', controller.router)
         }
         this._app.all('*', async (req, res) => {
             throw new NotFoundError()
