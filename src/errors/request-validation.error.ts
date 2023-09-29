@@ -17,3 +17,15 @@ export class RequestValidationError extends CustomError {
     })
   }
 }
+
+export class JoiValidationError extends CustomError {
+  statusCode = 400
+
+  constructor(public errors: string) {
+    super('Invalid request parameters')
+  }
+
+  serializeErrors() {
+    return JSON.parse(this.errors)
+  }
+}
