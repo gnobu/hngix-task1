@@ -18,6 +18,13 @@ const createVideoRecord = {
 	}),
 }
 
+const deleteVideoRecord = {
+	params: Joi.object().keys({
+		title: Joi.string().required(),
+	})
+}
+
 export default {
-	createVideoRecord
+	createVideoRecord,
+	deleteVideoRecord
 }
