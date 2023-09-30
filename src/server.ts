@@ -10,7 +10,8 @@ import Person from "./models/person.model"
 import Database from "./utils/database.util"
 import { DatabaseConnectionError } from "./errors/database-connection.error"
 import { VideoController } from "./controllers/video.controller"
-import { Cloudinary } from "./services/cloudinary.service"
+import { VideoService } from "./services/video.service"
+import Video from "./models/video.model"
 
 (async () => {
     // ensure required env variables are present
@@ -29,7 +30,7 @@ import { Cloudinary } from "./services/cloudinary.service"
         new Home(URL),
         new Task1Controller(),
         new PersonController(new PersonService(Person)),
-        new VideoController(Cloudinary)
+        new VideoController(new VideoService(Video))
     ], PORT, URL)
 
     app.listen()

@@ -18,13 +18,20 @@ const createVideoRecord = {
 	}),
 }
 
+const uploadChunk = {
+	params: Joi.object().keys({
+		chunk: Joi.required(),
+	})
+}
+
 const deleteVideoRecord = {
 	params: Joi.object().keys({
-		title: Joi.string().required(),
+		id: Joi.string().required(),
 	})
 }
 
 export default {
 	createVideoRecord,
+	uploadChunk,
 	deleteVideoRecord
 }

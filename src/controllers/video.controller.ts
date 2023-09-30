@@ -1,64 +1,79 @@
 import express, { RequestHandler } from "express"
 import fs from "fs"
+import fsPromises from "fs/promises"
 import path from "path"
 import httpStatus from "http-status"
+import { v4 as uuid } from 'uuid'
 
 import { IController } from "../interfaces/controller.interface"
-import { ICloudStorage } from "../interfaces/ICloudStorage.interface"
-import { fileUpload } from "../middleware/imageUpload.middleware"
 import validate from "../middleware/validate"
 import { videoValidation } from "../validation"
+import { VideoService } from "../services/video.service"
+import { NotFoundError } from "../errors/not-found.error"
 
 export class VideoController implements IController {
     path = '/videos'
-    router
-    private _cloudStorageService
-    constructor(cloudStorageService: ICloudStorage) {
-        this.router = express.Router()
-        this._cloudStorageService = cloudStorageService
+    router = express.Router()
+    constructor(
+        private _videoService: VideoService
+    ) {
         this.initializeRoutes()
     }
 
     public initializeRoutes() {
         this.router.get(this.path, this._getAllVideos)
-        this.router.post(this.path, fileUpload.single('video'), validate(videoValidation.createVideoRecord), this._createVideoRecord)
-        this.router.delete(`${this.path}/:title`, validate(videoValidation.deleteVideoRecord), this._deleteVideoRecord)
+        this.router.post(this.path, this._startRecording)
+        this.router.put(`${this.path}/:id`, validate(videoValidation.uploadChunk), this._uploadChunk)
+        this.router.delete(`${this.path}/:id`, validate(videoValidation.deleteVideoRecord), this._deleteVideoRecord)
     }
 
-    private _createVideoRecord: RequestHandler = async (req, res) => {
-        const { title } = req.body
-        const video = req.file
-        const extension = path.extname(video!.originalname)
-        const newPath = path.join(video!.destination, title + extension)
+    private _startRecording: RequestHandler = async (req, res) => {
+        const filename = `${uuid()}.webm`
+        fs.writeFileSync(path.join(__dirname, '..', '..', 'uploads', filename), '')
 
-        // TODO: validate file name conflict
-        fs.renameSync(video!.path, newPath)
-        this._cloudStorageService.uploadVideo(newPath, title, 'video')
+        const { id } = await this._videoService.create({ filename })
 
-        const publicURL = `${process.env.BASE_URL}/video/${title + extension}`
-        res.status(httpStatus.CREATED).json({ message: "Video uploaded successfully", url: publicURL })
+        res.status(httpStatus.CREATED).json(id)
     }
 
-    private async _getAllVideos(req: express.Request, res: express.Response) {
-        const destination = path.join(__dirname, '..', '..', 'uploads')
-        const files = fs.readdirSync(destination)
-        const urls = files.map(file => `${process.env.BASE_URL}/video/${file}`)
-        res.json(urls)
+    private _uploadChunk: RequestHandler = async (req, res) => {
+        const { chunk } = req.body
+        const { id } = req.params
+        const videoDoc = await this._videoService.findOne(id)
+
+        if (!videoDoc) throw new NotFoundError()
+        await fsPromises.appendFile(path.join(__dirname, '..', '..', 'uploads', videoDoc.filename), chunk)
+
+        res.send("Successful")
+    }
+
+    private _finishRecording: RequestHandler = async (req, res) => {
+        const { id } = req.params
+        const videoDoc = await this._videoService.findOne(id)
+        if (!videoDoc) throw new NotFoundError()
+
+        // Publish file to broker
+        // return OK to the FE
     }
 
     private _deleteVideoRecord: RequestHandler = async (req, res) => {
-        const { title } = req.params
+        const { id } = req.params
+
+        const deleted = await this._videoService.delete(id)
+        if (!deleted) return res.status(httpStatus.NO_CONTENT).end()
 
         const destination = path.join(__dirname, '..', '..', 'uploads')
-        const files = fs.readdirSync(destination)
-        const fileName = files.filter(fileName => new RegExp(title).test(fileName))[0]
+        fs.unlinkSync(`${destination}\\${deleted.filename}`)
 
-        if (fileName) {
-            fs.unlinkSync(`${destination}\\${fileName}`)
-            this._cloudStorageService.deleteImage(title)
-            return res.json({ message: "Video deleted successfully" })
-        }
+        return res.json({ message: "Video deleted successfully" })
+    }
 
-        res.status(httpStatus.NO_CONTENT).send("No content")
+    private _getAllVideos: RequestHandler = async (req, res) => {
+        const files = await this._videoService.findMany()
+        const urls = files.map(file => ({
+            video_url: `${process.env.BASE_URL}/video/${file.filename}`,
+            transcription: file.transcription
+        }))
+        res.json(urls)
     }
 }
