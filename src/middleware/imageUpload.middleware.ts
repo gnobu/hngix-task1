@@ -9,8 +9,10 @@ const fileStorage = multer.diskStorage({
     },
     filename: function (req, file, cb) {
         const ext = path.extname(file.originalname)
-        cb(null, uuid()+ '.' + ext)
+        cb(null, uuid() + '.' + ext)
     }
 })
-
 export const fileUpload = multer({ storage: fileStorage })
+
+const memoryStorage = multer.memoryStorage()
+export const memoryUpload = multer({ storage: memoryStorage })

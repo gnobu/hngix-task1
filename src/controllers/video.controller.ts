@@ -10,6 +10,8 @@ import validate from "../middleware/validate"
 import { videoValidation } from "../validation"
 import { VideoService } from "../services/video.service"
 import { NotFoundError } from "../errors/not-found.error"
+import { BadRequestError } from "../errors/bad-request.error"
+import { memoryUpload } from "../middleware/imageUpload.middleware"
 
 export class VideoController implements IController {
     path = '/videos'
@@ -25,6 +27,7 @@ export class VideoController implements IController {
         this.router.get(this.path, this._getAllVideos)
         this.router.get(`${this.path}/:id`, this._getVideo)
         this.router.put(`${this.path}/:id`, validate(videoValidation.uploadChunk), this._uploadChunk)
+        this.router.put(`${this.path}/:id/formData`, memoryUpload.single('chunk'), this._uploadChunkWMulter)
         this.router.delete(`${this.path}/:id`, validate(videoValidation.deleteVideoRecord), this._deleteVideoRecord)
     }
 
@@ -44,6 +47,19 @@ export class VideoController implements IController {
 
         if (!videoDoc) throw new NotFoundError()
         await fsPromises.appendFile(path.join(__dirname, '..', '..', 'uploads', videoDoc.filename), chunk)
+
+        res.send("Successful")
+    }
+
+    private _uploadChunkWMulter: RequestHandler = async (req, res) => {
+        const blob = req.file
+        if (!blob) throw new BadRequestError('Bad File')
+
+        const { id } = req.params
+        const videoDoc = await this._videoService.findOne(id)
+
+        if (!videoDoc) throw new NotFoundError()
+        await fsPromises.appendFile(path.join(__dirname, '..', '..', 'uploads', videoDoc.filename), blob.buffer)
 
         res.send("Successful")
     }
