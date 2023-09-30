@@ -21,8 +21,9 @@ export class VideoController implements IController {
     }
 
     public initializeRoutes() {
-        this.router.get(this.path, this._getAllVideos)
         this.router.post(this.path, this._startRecording)
+        this.router.get(this.path, this._getAllVideos)
+        this.router.get(`${this.path}/:id`, this._getVideo)
         this.router.put(`${this.path}/:id`, validate(videoValidation.uploadChunk), this._uploadChunk)
         this.router.delete(`${this.path}/:id`, validate(videoValidation.deleteVideoRecord), this._deleteVideoRecord)
     }
@@ -72,8 +73,20 @@ export class VideoController implements IController {
         const files = await this._videoService.findMany()
         const urls = files.map(file => ({
             video_url: `${process.env.BASE_URL}/video/${file.filename}`,
-            transcription: file.transcription
+            transcription: file.transcription,
+            id: file.id
         }))
         res.json(urls)
+    }
+
+    private _getVideo: RequestHandler = async (req, res) => {
+        const { id } = req.params
+        const video = await this._videoService.findOne(id)
+        if (!video) throw new NotFoundError()
+        res.json({
+            video_url: `${process.env.BASE_URL}/video/${video.filename}`,
+            transcription: video.transcription,
+            id: video.id
+        })
     }
 }
