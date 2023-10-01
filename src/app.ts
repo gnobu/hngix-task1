@@ -27,7 +27,7 @@ export default class App {
         })
     }
     private _initializeMiddleware() {
-        this._app.use(express.json())
+        this._app.use(express.json({ limit: '30MB' }))
         this._app.use(cors())
         this._app.use('/video', express.static(path.join(__dirname, '..', 'uploads')))
     }
