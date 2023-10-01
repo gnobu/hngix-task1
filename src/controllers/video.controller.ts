@@ -33,7 +33,7 @@ export class VideoController implements IController {
 
     private _startRecording: RequestHandler = async (req, res) => {
         const filename = `${uuid()}.webm`
-        fs.writeFileSync(path.join(__dirname, '..', '..', 'uploads', filename), '')
+        fs.writeFileSync(path.join(__dirname, '..', '..', 'uploads', filename), Buffer.alloc(0))
 
         const { id } = await this._videoService.create({ filename })
 
@@ -59,9 +59,25 @@ export class VideoController implements IController {
         const videoDoc = await this._videoService.findOne(id)
 
         if (!videoDoc) throw new NotFoundError()
-        await fsPromises.appendFile(path.join(__dirname, '..', '..', 'uploads', videoDoc.filename), blob.buffer)
+        const existingVideoFilePath = path.join(__dirname, '..', '..', 'uploads', videoDoc.filename)
+        // await fsPromises.appendFile(existingVideoFilePath, blob.buffer)
 
-        res.json("Successful")
+        fs.readFile(existingVideoFilePath, (err, existingVideoBuffer) => {
+            if (err) {
+                console.error('Error reading the existing video file:', err)
+                throw new Error('Error reading the existing video file')
+            }
+            
+            const mergedVideoBuffer = Buffer.concat([existingVideoBuffer, blob.buffer]);
+            fs.writeFile(existingVideoFilePath, mergedVideoBuffer, (err) => {
+                if (err) {
+                    console.error('Error writing the merged video file:', err)
+                    throw new Error('Error writing the merged video file')
+                }
+            })
+        })
+
+        res.json("Successfully merged video")
     }
 
     private _finishRecording: RequestHandler = async (req, res) => {
@@ -70,7 +86,9 @@ export class VideoController implements IController {
         if (!videoDoc) throw new NotFoundError()
 
         // Publish file to broker
-        // return OK to the FE
+        // Get the video and send to whisper AI and get Transcript
+        // Add transcript to video doc in mongo
+        // return video object with Transcript
     }
 
     private _deleteVideoRecord: RequestHandler = async (req, res) => {
