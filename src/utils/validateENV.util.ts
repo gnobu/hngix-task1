@@ -9,6 +9,7 @@ function validateEnv() {
         CLOUDNAME: str(),
         CLOUDAPIKEY: str(),
         CLOUDINARYSECRET: str(),
+        OPENAI_API_KEY: str(),
     })
 }
 

@@ -12,6 +12,7 @@ import { DatabaseConnectionError } from "./errors/database-connection.error"
 import { VideoController } from "./controllers/video.controller"
 import { VideoService } from "./services/video.service"
 import Video from "./models/video.model"
+import transcriptionService from "./services/transcription.service"
 
 (async () => {
     // ensure required env variables are present
@@ -30,7 +31,7 @@ import Video from "./models/video.model"
         new Home(URL),
         new Task1Controller(),
         new PersonController(new PersonService(Person)),
-        new VideoController(new VideoService(Video))
+        new VideoController(new VideoService(Video), transcriptionService)
     ], PORT, URL)
 
     app.listen()

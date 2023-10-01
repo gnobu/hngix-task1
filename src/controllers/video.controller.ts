@@ -12,12 +12,14 @@ import { VideoService } from "../services/video.service"
 import { NotFoundError } from "../errors/not-found.error"
 import { BadRequestError } from "../errors/bad-request.error"
 import { memoryUpload } from "../middleware/imageUpload.middleware"
+import { ITranscriptionService } from "../interfaces/transcription.inteface"
 
 export class VideoController implements IController {
     path = '/videos'
     router = express.Router()
     constructor(
-        private _videoService: VideoService
+        private _videoService: VideoService,
+        private _transcriptionService: ITranscriptionService
     ) {
         this.initializeRoutes()
     }
@@ -28,15 +30,14 @@ export class VideoController implements IController {
         this.router.get(`${this.path}/:id`, this._getVideo)
         this.router.put(`${this.path}/:id`, validate(videoValidation.uploadChunk), this._uploadChunk)
         this.router.put(`${this.path}/:id/formData`, memoryUpload.single('chunk'), this._uploadChunkWMulter)
+        this.router.put(`${this.path}/:id/end_recording`, this._finishRecording)
         this.router.delete(`${this.path}/:id`, validate(videoValidation.deleteVideoRecord), this._deleteVideoRecord)
     }
 
     private _startRecording: RequestHandler = async (req, res) => {
         const filename = `${uuid()}.webm`
         fs.writeFileSync(path.join(__dirname, '..', '..', 'uploads', filename), Buffer.alloc(0))
-
         const { id } = await this._videoService.create({ filename })
-
         res.status(httpStatus.CREATED).json(id)
     }
 
@@ -44,31 +45,14 @@ export class VideoController implements IController {
         const { chunk } = req.body
         const { id } = req.params
         const videoDoc = await this._videoService.findOne(id)
-
-        if (!videoDoc) throw new NotFoundError()
-        await fsPromises.appendFile(path.join(__dirname, '..', '..', 'uploads', videoDoc.filename), chunk)
-
-        res.json("Successful")
-    }
-
-    private _uploadChunkWMulter: RequestHandler = async (req, res) => {
-        const blob = req.file
-        if (!blob?.buffer) throw new BadRequestError('Bad File')
-
-        const { id } = req.params
-        const videoDoc = await this._videoService.findOne(id)
-
         if (!videoDoc) throw new NotFoundError()
         const existingVideoFilePath = path.join(__dirname, '..', '..', 'uploads', videoDoc.filename)
-        // await fsPromises.appendFile(existingVideoFilePath, blob.buffer)
-
         fs.readFile(existingVideoFilePath, (err, existingVideoBuffer) => {
             if (err) {
                 console.error('Error reading the existing video file:', err)
                 throw new Error('Error reading the existing video file')
             }
-            
-            const mergedVideoBuffer = Buffer.concat([existingVideoBuffer, blob.buffer]);
+            const mergedVideoBuffer = Buffer.concat([existingVideoBuffer, Buffer.from(chunk, 'base64')])
             fs.writeFile(existingVideoFilePath, mergedVideoBuffer, (err) => {
                 if (err) {
                     console.error('Error writing the merged video file:', err)
@@ -76,7 +60,29 @@ export class VideoController implements IController {
                 }
             })
         })
+        res.json("Successful")
+    }
 
+    private _uploadChunkWMulter: RequestHandler = async (req, res) => {
+        const blob = req.file
+        if (!blob?.buffer) throw new BadRequestError('Bad File')
+        const { id } = req.params
+        const videoDoc = await this._videoService.findOne(id)
+        if (!videoDoc) throw new NotFoundError()
+        const existingVideoFilePath = path.join(__dirname, '..', '..', 'uploads', videoDoc.filename)
+        fs.readFile(existingVideoFilePath, (err, existingVideoBuffer) => {
+            if (err) {
+                console.error('Error reading the existing video file:', err)
+                throw new Error('Error reading the existing video file')
+            }
+            const mergedVideoBuffer = Buffer.concat([existingVideoBuffer, blob.buffer])
+            fs.writeFile(existingVideoFilePath, mergedVideoBuffer, (err) => {
+                if (err) {
+                    console.error('Error writing the merged video file:', err)
+                    throw new Error('Error writing the merged video file')
+                }
+            })
+        })
         res.json("Successfully merged video")
     }
 
@@ -87,8 +93,18 @@ export class VideoController implements IController {
 
         // Publish file to broker
         // Get the video and send to whisper AI and get Transcript
+        const videoPath = path.join(__dirname, '..', '..', 'uploads', videoDoc.filename)
+        const transcript = await this._transcriptionService.transcribe(videoPath)
+        console.log(transcript)
         // Add transcript to video doc in mongo
+        const updatedVideo = await this._videoService.update(id, { transcription: transcript })
+        if (!updatedVideo) throw new Error("Something unexpected happened")
         // return video object with Transcript
+        res.json({
+            video_url: `${process.env.BASE_URL}/video/${updatedVideo.filename}`,
+            transcription: updatedVideo.transcription,
+            id: updatedVideo.id
+        })
     }
 
     private _deleteVideoRecord: RequestHandler = async (req, res) => {
