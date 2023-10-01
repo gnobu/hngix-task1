@@ -95,7 +95,6 @@ export class VideoController implements IController {
         // Get the video and send to whisper AI and get Transcript
         const videoPath = path.join(__dirname, '..', '..', 'uploads', videoDoc.filename)
         const transcript = await this._transcriptionService.transcribe(videoPath)
-        console.log(transcript)
         // Add transcript to video doc in mongo
         const updatedVideo = await this._videoService.update(id, { transcription: transcript })
         if (!updatedVideo) throw new Error("Something unexpected happened")
