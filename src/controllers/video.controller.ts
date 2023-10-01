@@ -48,12 +48,12 @@ export class VideoController implements IController {
         if (!videoDoc) throw new NotFoundError()
         await fsPromises.appendFile(path.join(__dirname, '..', '..', 'uploads', videoDoc.filename), chunk)
 
-        res.send("Successful")
+        res.json("Successful")
     }
 
     private _uploadChunkWMulter: RequestHandler = async (req, res) => {
         const blob = req.file
-        if (!blob) throw new BadRequestError('Bad File')
+        if (!blob?.buffer) throw new BadRequestError('Bad File')
 
         const { id } = req.params
         const videoDoc = await this._videoService.findOne(id)
@@ -61,7 +61,7 @@ export class VideoController implements IController {
         if (!videoDoc) throw new NotFoundError()
         await fsPromises.appendFile(path.join(__dirname, '..', '..', 'uploads', videoDoc.filename), blob.buffer)
 
-        res.send("Successful")
+        res.json("Successful")
     }
 
     private _finishRecording: RequestHandler = async (req, res) => {
