@@ -12,14 +12,14 @@ import { VideoService } from "../services/video.service"
 import { NotFoundError } from "../errors/not-found.error"
 import { BadRequestError } from "../errors/bad-request.error"
 import { memoryUpload } from "../middleware/imageUpload.middleware"
-import { ITranscriptionService } from "../interfaces/transcription.inteface"
+import { TranscriptionService } from "../interfaces/transcription.inteface"
 
 export class VideoController implements IController {
     path = '/videos'
     router = express.Router()
     constructor(
         private _videoService: VideoService,
-        private _transcriptionService: ITranscriptionService
+        private _transcriptionService: TranscriptionService
     ) {
         this.initializeRoutes()
     }

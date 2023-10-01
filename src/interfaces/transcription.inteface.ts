@@ -1,3 +1,3 @@
-export interface ITranscriptionService {
-    transcribe(video: string): Promise<string | null>
+export abstract class TranscriptionService {
+    abstract transcribe(video: string): Promise<string | null>
 }

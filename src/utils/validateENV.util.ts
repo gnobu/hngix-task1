@@ -10,6 +10,7 @@ function validateEnv() {
         CLOUDAPIKEY: str(),
         CLOUDINARYSECRET: str(),
         OPENAI_API_KEY: str(),
+        DEEPGRAM_API_KEY: str(),
     })
 }
 

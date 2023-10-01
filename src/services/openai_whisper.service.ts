@@ -1,8 +1,8 @@
 import fs from 'fs'
 import OpenAI from 'openai'
-import { ITranscriptionService } from '../interfaces/transcription.inteface'
+import { TranscriptionService } from '../interfaces/transcription.inteface'
 
-export class OpenAIService implements ITranscriptionService {
+export class OpenAIService implements TranscriptionService {
     private _openai
     constructor() {
         this._openai = new OpenAI({
@@ -23,4 +23,4 @@ export class OpenAIService implements ITranscriptionService {
     }
 }
 
-export default new OpenAIService()
+export const openAIService = new OpenAIService()
