@@ -5,6 +5,6 @@ To run the server locally,
 2. run:
   `npm run start:dev` for compiled code
   or `npm run dev` to run the typescript version
-3. Head to localhost:5000/hng/task1 in order to see task1 response.
+<!-- 3. Head to <BASE_URL>/docs to see the API docs. -->
 
 Checkout [DOCUMENTATION.md](./DOCUMENTATION.md) for the API endpoints and their requirements.

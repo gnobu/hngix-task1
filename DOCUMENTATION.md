@@ -1,618 +1,141 @@
 # API Documentation
+
+## Person Documentation
 This endpoint is used to perform CRUD operations on a "person" resource. See the list of request endpoints and their specifications below. Examples of successful requests and a few failed requests are also provided in the response fields.
 
-A prettier version of the documentation can be found [here](https://documenter.getpostman.com/view/21264552/2s9YC5xrym).
 Also, relevant UML diagrams of the models, classes and relationships can be viewed [here](https://whimsical.com/hngx-task-2-HHh1vVFJvT9YFjmfSNqGW).
 
-You can also check out the [live](https://gnobu-hngx.onrender.com/api/) API.
+You can also check out the [live](https://ubong-inyang.onrender.com/api/person) API.
 
+The Endpoint documentation can be found [here](https://ubong-inyang.onrender.com/docs).
 Note: when running locally, the {{baseUrl}} variable should point to localhost:5000.
 
-```
-{
-    "requests": [
-        {
-            "name": "create a person",
-            "request": {
-                "description": "This request creates a person in the database.",
-                "method": "POST",
-                "header": [],
-                "body": {
-                    "mode": "raw",
-                    "raw": "{\r\n    \"name\": \"John Doe\"\r\n}",
-                    "options": {
-                        "raw": {
-                            "language": "json"
-                        }
-                    }
-                },
-                "url": {
-                    "raw": "{{baseUrl}}/api/",
-                    "host": [
-                        "{{baseUrl}}"
-                    ],
-                    "path": [
-                        "api",
-                        ""
-                    ]
-                }
-            },
-            "response": [
-                {
-                    "id": "2d0c3a52-fdee-49e8-9f4e-c3f402b9e028",
-                    "name": "create person named \"John Doe\"",
-                    "originalRequest": {
-                        "method": "POST",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\r\n    \"name\": \"John Doe\"\r\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/api/",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "api",
-                                ""
-                            ]
-                        }
-                    },
-                    "status": "Created",
-                    "code": 201,
-                    "_postman_previewlanguage": "json",
-                    "header": [
-                        {
-                            "key": "X-Powered-By",
-                            "value": "Express"
-                        },
-                        {
-                            "key": "Access-Control-Allow-Origin",
-                            "value": "*"
-                        },
-                        {
-                            "key": "Content-Type",
-                            "value": "application/json; charset=utf-8"
-                        },
-                        {
-                            "key": "Content-Length",
-                            "value": "51"
-                        },
-                        {
-                            "key": "ETag",
-                            "value": "W/\"33-M4e5W/o3o3zkBNR5oKzui8Zst8U\""
-                        },
-                        {
-                            "key": "Date",
-                            "value": "Thu, 14 Sep 2023 13:18:48 GMT"
-                        },
-                        {
-                            "key": "Connection",
-                            "value": "keep-alive"
-                        },
-                        {
-                            "key": "Keep-Alive",
-                            "value": "timeout=5"
-                        }
-                    ],
-                    "cookie": [],
-                    "responseTime": null,
-                    "body": "{\n    \"name\": \"John Doe\",\n    \"id\": \"6503083702bbb10b27b24e8d\"\n}",
-                    "uid": "21264552-2d0c3a52-fdee-49e8-9f4e-c3f402b9e028"
-                }
-            ],
-            "uid": "21264552-26229a1f-4773-4bae-87b8-78d55791bbe5"
-        },
-        {
-            "name": "update a person",
-            "request": {
-                "description": "This request updates a person in the database.",
-                "method": "PUT",
-                "header": [],
-                "body": {
-                    "mode": "raw",
-                    "raw": "{\r\n    \"name\": \"Jane Doe\"\r\n}",
-                    "options": {
-                        "raw": {
-                            "language": "json"
-                        }
-                    }
-                },
-                "url": {
-                    "raw": "{{baseUrl}}/api/:id",
-                    "host": [
-                        "{{baseUrl}}"
-                    ],
-                    "path": [
-                        "api",
-                        ":id"
-                    ],
-                    "variable": [
-                        {
-                            "key": "id",
-                            "value": "650211a75b0220757e8a0013"
-                        }
-                    ]
-                }
-            },
-            "response": [
-                {
-                    "id": "c88c33dd-fecb-4866-b59a-c3787984c0a2",
-                    "name": "update a person",
-                    "originalRequest": {
-                        "method": "PUT",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\r\n    \"name\": \"Jane Doe\"\r\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/api/:id",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "api",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "650211a75b0220757e8a0013"
-                                }
-                            ]
-                        }
-                    },
-                    "status": "OK",
-                    "code": 200,
-                    "_postman_previewlanguage": "json",
-                    "header": [
-                        {
-                            "key": "X-Powered-By",
-                            "value": "Express"
-                        },
-                        {
-                            "key": "Access-Control-Allow-Origin",
-                            "value": "*"
-                        },
-                        {
-                            "key": "Content-Type",
-                            "value": "application/json; charset=utf-8"
-                        },
-                        {
-                            "key": "Content-Length",
-                            "value": "51"
-                        },
-                        {
-                            "key": "ETag",
-                            "value": "W/\"33-+0Q8M3D8OhnPgMKd5ej+Db1cxwE\""
-                        },
-                        {
-                            "key": "Date",
-                            "value": "Thu, 14 Sep 2023 13:22:20 GMT"
-                        },
-                        {
-                            "key": "Connection",
-                            "value": "keep-alive"
-                        },
-                        {
-                            "key": "Keep-Alive",
-                            "value": "timeout=5"
-                        }
-                    ],
-                    "cookie": [],
-                    "responseTime": null,
-                    "body": "{\n    \"name\": \"Jane Doe\",\n    \"id\": \"650211a75b0220757e8a0013\"\n}",
-                    "uid": "21264552-c88c33dd-fecb-4866-b59a-c3787984c0a2"
-                }
-            ],
-            "uid": "21264552-04b384f0-7ad9-4e8a-9bd0-a6791138bb42"
-        },
-        {
-            "name": "find all persons",
-            "request": {
-                "description": "This request retrieves all persons in the database.",
-                "method": "GET",
-                "header": [],
-                "url": {
-                    "raw": "{{baseUrl}}/api/",
-                    "host": [
-                        "{{baseUrl}}"
-                    ],
-                    "path": [
-                        "api",
-                        ""
-                    ]
-                }
-            },
-            "response": [
-                {
-                    "id": "1eaa5e4b-97f1-4f07-a727-e90fc4511445",
-                    "name": "find all persons",
-                    "originalRequest": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/api/",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "api",
-                                ""
-                            ]
-                        }
-                    },
-                    "status": "OK",
-                    "code": 200,
-                    "_postman_previewlanguage": "json",
-                    "header": [
-                        {
-                            "key": "X-Powered-By",
-                            "value": "Express"
-                        },
-                        {
-                            "key": "Access-Control-Allow-Origin",
-                            "value": "*"
-                        },
-                        {
-                            "key": "Content-Type",
-                            "value": "application/json; charset=utf-8"
-                        },
-                        {
-                            "key": "Content-Length",
-                            "value": "105"
-                        },
-                        {
-                            "key": "ETag",
-                            "value": "W/\"69-U9M9bfQCKuMJXw2Sif2qI7Ko8+k\""
-                        },
-                        {
-                            "key": "Date",
-                            "value": "Thu, 14 Sep 2023 13:25:23 GMT"
-                        },
-                        {
-                            "key": "Connection",
-                            "value": "keep-alive"
-                        },
-                        {
-                            "key": "Keep-Alive",
-                            "value": "timeout=5"
-                        }
-                    ],
-                    "cookie": [],
-                    "responseTime": null,
-                    "body": "[\n    {\n        \"name\": \"Jane Doe\",\n        \"id\": \"650211a75b0220757e8a0013\"\n    },\n    {\n        \"name\": \"John Doe\",\n        \"id\": \"6503083702bbb10b27b24e8d\"\n    }\n]",
-                    "uid": "21264552-1eaa5e4b-97f1-4f07-a727-e90fc4511445"
-                }
-            ],
-            "uid": "21264552-ea0bf9be-5006-45d5-9c67-f82acbece801"
-        },
-        {
-            "name": "find a person",
-            "request": {
-                "description": "This request retrieves a person from the database.",
-                "method": "GET",
-                "header": [],
-                "url": {
-                    "raw": "{{baseUrl}}/api/:id",
-                    "host": [
-                        "{{baseUrl}}"
-                    ],
-                    "path": [
-                        "api",
-                        ":id"
-                    ],
-                    "variable": [
-                        {
-                            "key": "id",
-                            "value": "650211a75b0220757e8a0013"
-                        }
-                    ]
-                }
-            },
-            "response": [
-                {
-                    "id": "00a74116-fcb0-4bd9-a507-cfcd7d53cd5f",
-                    "name": "person found",
-                    "originalRequest": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/api/:id",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "api",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "650211a75b0220757e8a0013"
-                                }
-                            ]
-                        }
-                    },
-                    "status": "OK",
-                    "code": 200,
-                    "_postman_previewlanguage": "json",
-                    "header": [
-                        {
-                            "key": "X-Powered-By",
-                            "value": "Express"
-                        },
-                        {
-                            "key": "Access-Control-Allow-Origin",
-                            "value": "*"
-                        },
-                        {
-                            "key": "Content-Type",
-                            "value": "application/json; charset=utf-8"
-                        },
-                        {
-                            "key": "Content-Length",
-                            "value": "51"
-                        },
-                        {
-                            "key": "ETag",
-                            "value": "W/\"33-+0Q8M3D8OhnPgMKd5ej+Db1cxwE\""
-                        },
-                        {
-                            "key": "Date",
-                            "value": "Thu, 14 Sep 2023 13:23:37 GMT"
-                        },
-                        {
-                            "key": "Connection",
-                            "value": "keep-alive"
-                        },
-                        {
-                            "key": "Keep-Alive",
-                            "value": "timeout=5"
-                        }
-                    ],
-                    "cookie": [],
-                    "responseTime": null,
-                    "body": "{\n    \"name\": \"Jane Doe\",\n    \"id\": \"650211a75b0220757e8a0013\"\n}",
-                    "uid": "21264552-00a74116-fcb0-4bd9-a507-cfcd7d53cd5f"
-                },
-                {
-                    "id": "32fd7017-94c1-44e3-9214-498208ff8590",
-                    "name": "person not found",
-                    "originalRequest": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/api/:id",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "api",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "650211a75b0220757e8a0014"
-                                }
-                            ]
-                        }
-                    },
-                    "status": "OK",
-                    "code": 200,
-                    "_postman_previewlanguage": "json",
-                    "header": [
-                        {
-                            "key": "X-Powered-By",
-                            "value": "Express"
-                        },
-                        {
-                            "key": "Access-Control-Allow-Origin",
-                            "value": "*"
-                        },
-                        {
-                            "key": "Content-Type",
-                            "value": "application/json; charset=utf-8"
-                        },
-                        {
-                            "key": "Content-Length",
-                            "value": "4"
-                        },
-                        {
-                            "key": "ETag",
-                            "value": "W/\"4-K+iMpCQsduglOsYkdIUQZQMtaDM\""
-                        },
-                        {
-                            "key": "Date",
-                            "value": "Thu, 14 Sep 2023 13:24:50 GMT"
-                        },
-                        {
-                            "key": "Connection",
-                            "value": "keep-alive"
-                        },
-                        {
-                            "key": "Keep-Alive",
-                            "value": "timeout=5"
-                        }
-                    ],
-                    "cookie": [],
-                    "responseTime": null,
-                    "body": "null",
-                    "uid": "21264552-32fd7017-94c1-44e3-9214-498208ff8590"
-                }
-            ],
-            "uid": "21264552-7017a43a-47a2-4ee3-ac8d-fc38b85ce34c"
-        },
-        {
-            "name": "delete a person",
-            "request": {
-                "description": "This request deletes a person from the database.",
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                    "raw": "{{baseUrl}}/api/:id",
-                    "host": [
-                        "{{baseUrl}}"
-                    ],
-                    "path": [
-                        "api",
-                        ":id"
-                    ],
-                    "variable": [
-                        {
-                            "key": "id",
-                            "value": "650306e935563c718b5250c8"
-                        }
-                    ]
-                }
-            },
-            "response": [
-                {
-                    "id": "17f04a72-8e42-4c1e-80e0-c385724de304",
-                    "name": "successful delete",
-                    "originalRequest": {
-                        "method": "DELETE",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/api/:id",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "api",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "650306e935563c718b5250c8"
-                                }
-                            ]
-                        }
-                    },
-                    "status": "OK",
-                    "code": 200,
-                    "_postman_previewlanguage": "json",
-                    "header": [
-                        {
-                            "key": "X-Powered-By",
-                            "value": "Express"
-                        },
-                        {
-                            "key": "Access-Control-Allow-Origin",
-                            "value": "*"
-                        },
-                        {
-                            "key": "Content-Type",
-                            "value": "application/json; charset=utf-8"
-                        },
-                        {
-                            "key": "Content-Length",
-                            "value": "53"
-                        },
-                        {
-                            "key": "ETag",
-                            "value": "W/\"35-gf3jpcAvIXOs4/hqPx/BPrMMSq0\""
-                        },
-                        {
-                            "key": "Date",
-                            "value": "Thu, 14 Sep 2023 13:19:59 GMT"
-                        },
-                        {
-                            "key": "Connection",
-                            "value": "keep-alive"
-                        },
-                        {
-                            "key": "Keep-Alive",
-                            "value": "timeout=5"
-                        }
-                    ],
-                    "cookie": [],
-                    "responseTime": null,
-                    "body": "{\n    \"name\": \"John Koffi\",\n    \"id\": \"650306e935563c718b5250c8\"\n}",
-                    "uid": "21264552-17f04a72-8e42-4c1e-80e0-c385724de304"
-                },
-                {
-                    "id": "52abebc4-4053-437a-907f-5b6cd8311056",
-                    "name": "standard error",
-                    "originalRequest": {
-                        "method": "DELETE",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/api/:id",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "api",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "650306e935563c718b5250c8"
-                                }
-                            ]
-                        }
-                    },
-                    "status": "Not Found",
-                    "code": 404,
-                    "_postman_previewlanguage": "json",
-                    "header": [
-                        {
-                            "key": "X-Powered-By",
-                            "value": "Express"
-                        },
-                        {
-                            "key": "Access-Control-Allow-Origin",
-                            "value": "*"
-                        },
-                        {
-                            "key": "Content-Type",
-                            "value": "application/json; charset=utf-8"
-                        },
-                        {
-                            "key": "Content-Length",
-                            "value": "36"
-                        },
-                        {
-                            "key": "ETag",
-                            "value": "W/\"24-20/QkAYVV7WS2xhewDlbaaGiki8\""
-                        },
-                        {
-                            "key": "Date",
-                            "value": "Thu, 14 Sep 2023 13:20:53 GMT"
-                        },
-                        {
-                            "key": "Connection",
-                            "value": "keep-alive"
-                        },
-                        {
-                            "key": "Keep-Alive",
-                            "value": "timeout=5"
-                        }
-                    ],
-                    "cookie": [],
-                    "responseTime": null,
-                    "body": "{\n    \"errors\": [\n        {\n            \"message\": \"Not Found\"\n        }\n    ]\n}",
-                    "uid": "21264552-52abebc4-4053-437a-907f-5b6cd8311056"
-                }
-            ],
-            "uid": "21264552-d9a12c66-a206-42de-a6e2-09e82ead81bd"
-        }
-    ]
-}
+
+## Video Upload API Documentation
+The Video Upload API is designed to facilitate the uploading and management of video files. It provides endpoints for uploading single or multiple video files, retrieving video details by ID, getting a list of all uploaded videos, starting and managing video recordings, and appending video chunks.
+
+#### Base URL
+The base URL for this API is determined by the `APP_URL` environment variable and defaults to `http://localhost:PORT` (where `PORT` is either the specified port or the default port 5000).
+
+### Authentication
+This API does not require authentication for most provided endpoints. However, you can implement authentication and authorization as needed for your application.
+
+<!-- ### Endpoints
+#### Start Recording a Video
+- **Endpoint**: `POST /api/videos`
+- **Summary**: Start recording a new video.
+- **Responses**:
+  - `200 OK`: Recording started successfully.
+    - Response JSON:
+      - `id` (String): ID of the newly started recording.
+
+#### Append a Video Chunk in Blob Format
+- **Endpoint**: `POST /api/videos/:id`
+- **Summary**: Upload a single video file.
+- **Request Type**: `multipart/form-data`
+- **Request Body**:
+  - `file` (File, required): The video file to upload.
+  - `title` (String, optional): The title of the video.
+- **Responses**:
+  - `201 Created`: File uploaded successfully.
+    - Response JSON:
+      - `message` (String): A success message.
+      - `fileUrl` (String): URL of the uploaded file.
+  - `500 Internal Server Error`: File upload failed.
+
+#### Append a Video Chunk in Base64 Format
+- **Endpoint**: `POST /api/videos/:id`
+- **Summary**: Upload a single video file.
+- **Request Type**: `application/json`
+- **Request Body**:
+  - `chunk` (string, required): The video file to upload.
+- **Responses**:
+  - `201 Created`: File uploaded successfully.
+    - Response JSON:
+      - `message` (String): A success message.
+      - `fileUrl` (String): URL of the uploaded file.
+  - `500 Internal Server Error`: File upload failed.
+
+#### Get Video Details by ID
+- **Endpoint**: `GET /video/:id`
+- **Summary**: Retrieve video details by specifying the video's unique ID.
+- **Parameters**:
+  - `id` (Path Parameter, required): The ID of the video.
+- **Responses**:
+  - `200 OK`: Video details retrieved successfully.
+    - Response JSON:
+      - `title` (String): Title of the video.
+      - `fileUrl` (String): URL of the video file.
+  - `404 Not Found`: Video not found.
+  - `500 Internal Server Error`: File retrieval failed.
+
+#### Get a List of Uploaded Videos
+- **Endpoint**: `GET /video`
+- **Summary**: Retrieve a list of all uploaded videos.
+- **Responses**:
+  - `200 OK`: List of uploaded videos retrieved successfully.
+    - Response JSON:
+      - An array of objects, each containing:
+        - `title` (String): Title of the video.
+        - `fileUrl` (String): URL of the video file.
+        - `transcriptio` (String): transcription of the video file.
+
+#### Append a Video Chunk
+- **Endpoint**: `POST /append-chunk/{id}`
+- **Summary**: Append a video chunk to an existing recording.
+- **Parameters**:
+  - `id` (Path Parameter, required): The ID of the video recording.
+- **Request Body**:
+  - `chunkData` (String, required): Base64-encoded video chunk data.
+- **Responses**:
+  - `200 OK`: Video chunk appended successfully.
+  - `404 Not Found`: Video not found.
+  - `500 Internal Server Error`: Error appending video chunk.
+
+#### Finish Recording and Start Transcription
+- **Endpoint**: `POST /end-recording/{id}`
+- **Summary**: Finish recording and start transcription for a video.
+- **Parameters**:
+  - `id` (Path Parameter, required): The ID of the video recording.
+- **Responses**:
+  - `200 OK`: Recording finished, and transcription started.
+  - `404 Not Found`: Video not found.
+  - `500 Internal Server Error`: Error finishing recording and starting transcription. -->
+
+### Worker Thread, RabbitMQ, and Transcription
+#### Worker Thread
+The Video Upload API utilizes a worker thread to handle video transcription tasks. When a video recording is finished and transcription needs to start, the API sends a message to RabbitMQ, which triggers the worker thread. The worker thread performs the transcription using Deepgram and updates the MongoDB document with the transcription text.
+
+#### RabbitMQ Integration
+RabbitMQ is used for message queuing in the Video Upload API. Specifically, it is employed to manage the transcription process. When a video recording is finished, a message is sent to a RabbitMQ queue, which is then consumed by the worker thread to initiate transcription. Ensure that RabbitMQ is properly configured and accessible by the API for this feature to work.
+
+#### Transcription Process
+The transcription process involves sending the audio data of a video recording to the Deepgram service. Deepgram transcribes the audio and returns the transcription text, which is then associated with the video in the database. Make sure to provide the necessary environment variables, including the Deepgram API key (`DEEPGRAM_API_KEY`) and MongoDB URI (`DB_URI`), for successful transcription.
+
+This README provides an overview of the Video Upload API's capabilities and how to use it. You can explore the API further by referring to the Swagger documentation for detailed endpoint descriptions and examples.
+
+#### Swagger Documentation
+You can access the Swagger documentation for this API by visiting the `/api-docs` endpoint in your browser. This documentation provides interactive access to the API endpoints and detailed information about request and response schemas.
+
+### Running the API
+To run the Video Upload API, execute the Node.js application with the appropriate configuration settings. By default, the API will run on port 5000. You can customize the port and other settings by modifying the `.env` file or specifying environment variables.
+
+In order to run the API, the following environment variables will be needed:
+- GITHUB_FILE_URL
+- GITHUB_REPO_URL
+- BASE_URL
+- DB_URI
+- AMQP_SERVER_URL
+- OPENAI_API_KEY
+- DEEPGRAM_API_KEY
+- CLOUDNAME
+- CLOUDAPIKEY
+- CLOUDINARYSECRET
+
+```bash
+# Install dependencies
+npm install
+
+# Start the server
+npm start
 ```
