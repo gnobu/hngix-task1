@@ -36,7 +36,7 @@ export class VideoController implements IController {
     /**
      * @swagger
      * tags:
-     *   name: Videos
+     *   name: videos
      *   description: API endpoints for managing videos
     */
 
@@ -45,7 +45,7 @@ export class VideoController implements IController {
      * /api/videos:
      *   post:
      *     summary: Upload a video file
-     *     tags: [Videos]
+     *     tags: [videos]
      *     responses:
      *       201:
      *         description: File uploaded successfully
@@ -65,10 +65,10 @@ export class VideoController implements IController {
 
     /**
      * @swagger
-     * /api/video/:id:
+     * /api/videos/:id:
      *   put:
      *     summary: Upload a video chunk in Base64 format
-     *     tags: [Videos]
+     *     tags: [videos]
      *     parameters:
      *         - name: id
      *           in: path
@@ -119,10 +119,15 @@ export class VideoController implements IController {
 
     /**
      * @swagger
-     * /api/video/:id/formData:
+     * /api/videos/:id/formData:
      *   put:
      *     summary: Upload a video chunk in Blob format
-     *     tags: [Videos]
+     *     tags: [videos]
+     *     parameters:
+     *         - name: id
+     *           in: path
+     *           description: id of the video
+     *           required: true
      *     consumes:
      *       - multipart/form-data
      *     requestBody:
@@ -170,10 +175,10 @@ export class VideoController implements IController {
 
     /**
      * @swagger
-     * /api/video/:id/end_recording:
+     * /api/videos/:id/end_recording:
      *   put:
      *     summary: Finish the recording and generate the transcription
-     *     tags: [Videos]
+     *     tags: [videos]
      *     parameters:
      *         - name: id
      *           in: path
@@ -234,10 +239,10 @@ export class VideoController implements IController {
 
     /**
      * @swagger
-     * /api/video/:id:
+     * /api/videos/:id:
      *   delete:
      *     summary: Delete a video by ID
-     *     tags: [Videos]
+     *     tags: [videos]
      *     parameters:
      *         - name: id
      *           in: path
@@ -263,11 +268,11 @@ export class VideoController implements IController {
     }
 
     /**
-     * @swagger
-     * /api/video:
+     * @openapi
+     * /api/videos:
      *   get:
      *     summary: Get a list of all videos
-     *     tags: [Videos]
+     *     tags: [videos]
      *     responses:
      *       200:
      *         description: Succesfully fetched videos
@@ -296,10 +301,10 @@ export class VideoController implements IController {
 
     /**
      * @swagger
-     * /api/video/:id:
+     * /api/videos/:id:
      *   get:
      *     summary: Get a video by ID
-     *     tags: [Videos]
+     *     tags: [videos]
      *     parameters:
      *         - name: id
      *           in: path

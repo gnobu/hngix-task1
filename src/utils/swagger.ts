@@ -8,11 +8,14 @@ const options: swaggerJsdoc.Options = {
             version: '1.0.0',
             description: 'A simple Express Video Upload API',
         },
-        // servers: [
-        //     {
-        //         url: 'https://upload-video-api.onrender.com/',
-        //     },
-        // ],
+        servers: [
+            {
+                url: 'https://ubong-inyang.onrender.com',
+            },
+            {
+                url: 'http://localhost:5000',
+            },
+        ],
     },
     apis: ['./src/controllers/*'],
 }
