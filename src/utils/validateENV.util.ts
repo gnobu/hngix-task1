@@ -11,6 +11,7 @@ function validateEnv() {
         CLOUDINARYSECRET: str(),
         OPENAI_API_KEY: str(),
         DEEPGRAM_API_KEY: str(),
+        AMQP_SERVER_URL: str(),
     })
 }
 

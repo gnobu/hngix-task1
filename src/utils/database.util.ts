@@ -7,6 +7,11 @@ class Database {
     }
     public async connect() {
         await mongoose.connect(this._dbURI)
+        console.log('Connected to MongoDB!')
+    }
+    public async disconnect() {
+        await mongoose.disconnect()
+        console.log('Disconnected from MongoDB!')
     }
 }
 

@@ -1,6 +1,5 @@
 import express, { RequestHandler } from "express"
 import fs from "fs"
-import fsPromises from "fs/promises"
 import path from "path"
 import httpStatus from "http-status"
 import { v4 as uuid } from 'uuid'
@@ -12,15 +11,14 @@ import { VideoService } from "../services/video.service"
 import { NotFoundError } from "../errors/not-found.error"
 import { BadRequestError } from "../errors/bad-request.error"
 import { memoryUpload } from "../middleware/imageUpload.middleware"
-import { TranscriptionService } from "../interfaces/transcription.inteface"
+import { StopRecordingPublisher } from "../events/publishers/stop-recording.publisher"
+import { amqpWrapper } from "../utils/amqpWrapper"
 
 export class VideoController implements IController {
     path = '/videos'
     router = express.Router()
-    constructor(
-        private _videoService: VideoService,
-        private _transcriptionService: TranscriptionService
-    ) {
+
+    constructor(private _videoService: VideoService) {
         this.initializeRoutes()
     }
 
@@ -60,7 +58,7 @@ export class VideoController implements IController {
                 }
             })
         })
-        res.json("Successful")
+        res.json("Successfully merged video")
     }
 
     private _uploadChunkWMulter: RequestHandler = async (req, res) => {
@@ -91,19 +89,13 @@ export class VideoController implements IController {
         const videoDoc = await this._videoService.findOne(id)
         if (!videoDoc) throw new NotFoundError()
 
-        // Publish file to broker
-        // Get the video and send to whisper AI and get Transcript
+        // Publish filepath and ID to broker
         const videoPath = path.join(__dirname, '..', '..', 'uploads', videoDoc.filename)
-        const transcript = await this._transcriptionService.transcribe(videoPath)
-        // Add transcript to video doc in mongo
-        const updatedVideo = await this._videoService.update(id, { transcription: transcript })
-        if (!updatedVideo) throw new Error("Something unexpected happened")
-        // return video object with Transcript
-        res.json({
-            video_url: `${process.env.BASE_URL}/video/${updatedVideo.filename}`,
-            transcription: updatedVideo.transcription,
-            id: updatedVideo.id
+        new StopRecordingPublisher(amqpWrapper.channel).publish({
+            id,
+            filepath: videoPath
         })
+        res.json('Processing transcript')
     }
 
     private _deleteVideoRecord: RequestHandler = async (req, res) => {
