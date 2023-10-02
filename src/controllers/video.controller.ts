@@ -30,9 +30,32 @@ export class VideoController implements IController {
         this.router.put(`${this.path}/:id/end_recording`, this._finishRecording)
         this.router.get(this.path, this._getAllVideos)
         this.router.get(`${this.path}/:id`, this._getSingleVideo)
-        this.router.delete(`${this.path}/:id`, validate(videoValidation.deleteVideoRecord), this._deleteVideo)
+        this.router.delete(`${this.path}/:id`, this._deleteVideo)
     }
 
+    /**
+     * @swagger
+     * tags:
+     *   name: Videos
+     *   description: API endpoints for managing videos
+    */
+
+    /**
+     * @swagger
+     * /api/videos:
+     *   post:
+     *     summary: Upload a video file
+     *     tags: [Videos]
+     *     responses:
+     *       201:
+     *         description: File uploaded successfully
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: string
+     *       500:
+     *         description: File upload failed     
+    */
     private _startRecording: RequestHandler = async (req, res) => {
         const filename = `${uuid()}.webm`
         fs.writeFileSync(path.join(__dirname, '..', '..', 'uploads', filename), Buffer.alloc(0))
@@ -40,6 +63,38 @@ export class VideoController implements IController {
         res.status(httpStatus.CREATED).json(id)
     }
 
+    /**
+     * @swagger
+     * /api/video/:id:
+     *   put:
+     *     summary: Upload a video chunk in Base64 format
+     *     tags: [Videos]
+     *     parameters:
+     *         - name: id
+     *           in: path
+     *           description: id of the video for uploading chunks of string data
+     *           required: true
+     *     requestBody:
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               chunk:
+     *                 type: string
+     *                 format: binary
+     *             required:
+     *               - chunk
+     *     responses:
+     *       200:
+     *         description: Files uploaded successfully
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: string
+     *       500:
+     *         description: File upload failed
+    */
     private _uploadBase64Chunk: RequestHandler = async (req, res) => {
         const { chunk } = req.body
         const { id } = req.params
@@ -62,6 +117,34 @@ export class VideoController implements IController {
         res.json("Successfully merged video")
     }
 
+    /**
+     * @swagger
+     * /api/video/:id/formData:
+     *   put:
+     *     summary: Upload a video chunk in Blob format
+     *     tags: [Videos]
+     *     consumes:
+     *       - multipart/form-data
+     *     requestBody:
+     *       content:
+     *         multipart/form-data:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               chunk:
+     *                 type: blob
+     *             required:
+     *               - chunk
+     *     responses:
+     *       200:
+     *         description: Files uploaded successfully
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: Blob
+     *       500:
+     *         description: File upload failed
+    */
     private _uploadBlobChunk: RequestHandler = async (req, res) => {
         const blob = req.file
         if (!blob?.buffer) throw new BadRequestError('Bad File')
@@ -85,6 +168,35 @@ export class VideoController implements IController {
         res.json("Successfully merged video")
     }
 
+    /**
+     * @swagger
+     * /api/video/:id/end_recording:
+     *   put:
+     *     summary: Finish the recording and generate the transcription
+     *     tags: [Videos]
+     *     parameters:
+     *         - name: id
+     *           in: path
+     *           description: id of the video
+     *           required: true
+     *     requestBody:
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               title:
+     *                 type: string
+     *     responses:
+     *       200:
+     *         description: Processing the transcript
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: string
+     *       500:
+     *         description: Error while renaming
+    */
     private _finishRecording: RequestHandler = async (req, res) => {
         const { id } = req.params
         const { title } = req.body
@@ -120,6 +232,27 @@ export class VideoController implements IController {
         res.json('Processing transcript')
     }
 
+    /**
+     * @swagger
+     * /api/video/:id:
+     *   delete:
+     *     summary: Delete a video by ID
+     *     tags: [Videos]
+     *     parameters:
+     *         - name: id
+     *           in: path
+     *           description: id of the video
+     *           required: true
+     *     responses:
+     *       200:
+     *         description: Succesfully deleted the video
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: string
+     *       204:
+     *         description: Video not found
+    */
     private _deleteVideo: RequestHandler = async (req, res) => {
         const { id } = req.params
         const deletedDoc = await this._videoService.delete(id)
@@ -129,6 +262,28 @@ export class VideoController implements IController {
         return res.json({ message: "Video deleted successfully" })
     }
 
+    /**
+     * @swagger
+     * /api/video:
+     *   get:
+     *     summary: Get a list of all videos
+     *     tags: [Videos]
+     *     responses:
+     *       200:
+     *         description: Succesfully fetched videos
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: array
+     *               items:
+     *                 type: object
+     *                 properties:
+     *                   id: string
+     *                   filename: string
+     *                   transcription: string
+     *       500:
+     *         description: Unexpected error
+    */
     private _getAllVideos: RequestHandler = async (req, res) => {
         const files = await this._videoService.findMany()
         const urls = files.map(file => ({
@@ -139,6 +294,31 @@ export class VideoController implements IController {
         res.json(urls)
     }
 
+    /**
+     * @swagger
+     * /api/video/:id:
+     *   get:
+     *     summary: Get a video by ID
+     *     tags: [Videos]
+     *     parameters:
+     *         - name: id
+     *           in: path
+     *           description: id of the video
+     *           required: true
+     *     responses:
+     *       200:
+     *         description: Succesfully fetched video
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 id: string
+     *                 filename: string
+     *                 transcription: string
+     *       500:
+     *         description: Unexpected error
+    */
     private _getSingleVideo: RequestHandler = async (req, res) => {
         const { id } = req.params
         const video = await this._videoService.findOne(id)

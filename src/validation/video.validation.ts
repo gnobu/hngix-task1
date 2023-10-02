@@ -36,15 +36,8 @@ const uploadChunkWMulter = {
 	}),
 }
 
-const deleteVideoRecord = {
-	params: Joi.object().keys({
-		id: Joi.string().required(),
-	})
-}
-
 export default {
 	createVideoRecord,
 	uploadChunk,
 	uploadChunkWMulter,
-	deleteVideoRecord
 }
