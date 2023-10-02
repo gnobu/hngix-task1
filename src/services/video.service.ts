@@ -1,5 +1,5 @@
 import { FilterQuery, UpdateQuery } from "mongoose"
-import { VideoAttrs, VideoModel } from "../models/video.model"
+import { IVideo, VideoAttrs, VideoModel } from "../models/video.model"
 
 export class VideoService {
     constructor(private _videoModel: VideoModel) { }
@@ -14,7 +14,7 @@ export class VideoService {
     async findOne(id: string) {
         return await this._videoModel.findById(id)
     }
-    async update(id: string, fields: UpdateQuery<VideoModel>) {
+    async update(id: string, fields: Partial<IVideo>) {
         return await this._videoModel.findByIdAndUpdate(id, fields, { new: true, runValidators: true })
     }
     async delete(id: string) {

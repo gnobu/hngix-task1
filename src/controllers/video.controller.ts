@@ -13,6 +13,7 @@ import { BadRequestError } from "../errors/bad-request.error"
 import { memoryUpload } from "../middleware/imageUpload.middleware"
 import { StopRecordingPublisher } from "../events/publishers/stop-recording.publisher"
 import { amqpWrapper } from "../utils/amqpWrapper"
+import { IVideo } from "../models/video.model"
 
 export class VideoController implements IController {
     path = '/videos'
@@ -24,12 +25,12 @@ export class VideoController implements IController {
 
     public initializeRoutes() {
         this.router.post(this.path, this._startRecording)
-        this.router.get(this.path, this._getAllVideos)
-        this.router.get(`${this.path}/:id`, this._getVideo)
-        this.router.put(`${this.path}/:id`, validate(videoValidation.uploadChunk), this._uploadChunk)
-        this.router.put(`${this.path}/:id/formData`, memoryUpload.single('chunk'), this._uploadChunkWMulter)
+        this.router.put(`${this.path}/:id`, validate(videoValidation.uploadChunk), this._uploadBase64Chunk)
+        this.router.put(`${this.path}/:id/formData`, memoryUpload.single('chunk'), this._uploadBlobChunk)
         this.router.put(`${this.path}/:id/end_recording`, this._finishRecording)
-        this.router.delete(`${this.path}/:id`, validate(videoValidation.deleteVideoRecord), this._deleteVideoRecord)
+        this.router.get(this.path, this._getAllVideos)
+        this.router.get(`${this.path}/:id`, this._getSingleVideo)
+        this.router.delete(`${this.path}/:id`, validate(videoValidation.deleteVideoRecord), this._deleteVideo)
     }
 
     private _startRecording: RequestHandler = async (req, res) => {
@@ -39,7 +40,7 @@ export class VideoController implements IController {
         res.status(httpStatus.CREATED).json(id)
     }
 
-    private _uploadChunk: RequestHandler = async (req, res) => {
+    private _uploadBase64Chunk: RequestHandler = async (req, res) => {
         const { chunk } = req.body
         const { id } = req.params
         const videoDoc = await this._videoService.findOne(id)
@@ -47,13 +48,13 @@ export class VideoController implements IController {
         const existingVideoFilePath = path.join(__dirname, '..', '..', 'uploads', videoDoc.filename)
         fs.readFile(existingVideoFilePath, (err, existingVideoBuffer) => {
             if (err) {
-                console.error('Error reading the existing video file:', err)
+                console.log('Error reading the existing video file:', err)
                 throw new Error('Error reading the existing video file')
             }
             const mergedVideoBuffer = Buffer.concat([existingVideoBuffer, Buffer.from(chunk, 'base64')])
             fs.writeFile(existingVideoFilePath, mergedVideoBuffer, (err) => {
                 if (err) {
-                    console.error('Error writing the merged video file:', err)
+                    console.log('Error writing the merged video file:', err)
                     throw new Error('Error writing the merged video file')
                 }
             })
@@ -61,7 +62,7 @@ export class VideoController implements IController {
         res.json("Successfully merged video")
     }
 
-    private _uploadChunkWMulter: RequestHandler = async (req, res) => {
+    private _uploadBlobChunk: RequestHandler = async (req, res) => {
         const blob = req.file
         if (!blob?.buffer) throw new BadRequestError('Bad File')
         const { id } = req.params
@@ -70,13 +71,13 @@ export class VideoController implements IController {
         const existingVideoFilePath = path.join(__dirname, '..', '..', 'uploads', videoDoc.filename)
         fs.readFile(existingVideoFilePath, (err, existingVideoBuffer) => {
             if (err) {
-                console.error('Error reading the existing video file:', err)
+                console.log('Error reading the existing video file:', err)
                 throw new Error('Error reading the existing video file')
             }
             const mergedVideoBuffer = Buffer.concat([existingVideoBuffer, blob.buffer])
             fs.writeFile(existingVideoFilePath, mergedVideoBuffer, (err) => {
                 if (err) {
-                    console.error('Error writing the merged video file:', err)
+                    console.log('Error writing the merged video file:', err)
                     throw new Error('Error writing the merged video file')
                 }
             })
@@ -86,27 +87,45 @@ export class VideoController implements IController {
 
     private _finishRecording: RequestHandler = async (req, res) => {
         const { id } = req.params
-        const videoDoc = await this._videoService.findOne(id)
+        const { title } = req.body
+
+        let videoDoc: IVideo | null
+        videoDoc = await this._videoService.findOne(id)
         if (!videoDoc) throw new NotFoundError()
 
+        const videoFolder = path.join(__dirname, '..', '..', 'uploads')
+
+        if (title) {
+            const oldPath = `${videoFolder}/${videoDoc.filename}`
+            const newFilename = `${title}.webm`
+            fs.rename(oldPath, `${videoFolder}/${newFilename}`, async (err) => {
+                if (err) {
+                    console.log(err)
+                    return res.json('Failed to set the title. Processing transcript')
+                }
+                let videoDoc = await this._videoService.update(id, { filename: newFilename })
+                new StopRecordingPublisher(amqpWrapper.channel).publish({
+                    id,
+                    filepath: `${videoFolder}/${videoDoc?.filename}`
+                })
+            })
+            return res.json('Processing transcript')
+        }
+
         // Publish filepath and ID to broker
-        const videoPath = path.join(__dirname, '..', '..', 'uploads', videoDoc.filename)
         new StopRecordingPublisher(amqpWrapper.channel).publish({
             id,
-            filepath: videoPath
+            filepath: `${videoFolder}/${videoDoc.filename}`
         })
         res.json('Processing transcript')
     }
 
-    private _deleteVideoRecord: RequestHandler = async (req, res) => {
+    private _deleteVideo: RequestHandler = async (req, res) => {
         const { id } = req.params
-
-        const deleted = await this._videoService.delete(id)
-        if (!deleted) return res.status(httpStatus.NO_CONTENT).end()
-
-        const destination = path.join(__dirname, '..', '..', 'uploads')
-        fs.unlinkSync(`${destination}\\${deleted.filename}`)
-
+        const deletedDoc = await this._videoService.delete(id)
+        if (!deletedDoc) return res.status(httpStatus.NO_CONTENT).end()
+        const filepath = `${path.join(__dirname, '..', '..', 'uploads')}\\${deletedDoc.filename}`
+        fs.unlinkSync(filepath)
         return res.json({ message: "Video deleted successfully" })
     }
 
@@ -120,7 +139,7 @@ export class VideoController implements IController {
         res.json(urls)
     }
 
-    private _getVideo: RequestHandler = async (req, res) => {
+    private _getSingleVideo: RequestHandler = async (req, res) => {
         const { id } = req.params
         const video = await this._videoService.findOne(id)
         if (!video) throw new NotFoundError()

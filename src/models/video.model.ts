@@ -4,7 +4,7 @@ export interface VideoAttrs {
     filename: string
 }
 
-interface IVideo extends mongoose.Document {
+export interface IVideo extends mongoose.Document {
     filename: string
     transcription: string
 }
