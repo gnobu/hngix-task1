@@ -346,7 +346,6 @@ export class VideoController implements IController {
     */
     private _getSingleVideo: RequestHandler = async (req, res) => {
         const { id } = req.params
-        console.log(id)
         const video = await this._videoService.findOne(id)
         if (!video) throw new NotFoundError()
         res.json({
