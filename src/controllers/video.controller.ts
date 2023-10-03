@@ -139,7 +139,8 @@ export class VideoController implements IController {
      *             type: object
      *             properties:
      *               chunk:
-     *                 type: blob
+     *                 type: string
+     *                 format: binary
      *             required:
      *               - chunk
      *     responses:
