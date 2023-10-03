@@ -44,7 +44,7 @@ export class VideoController implements IController {
      * @swagger
      * /api/videos:
      *   post:
-     *     summary: Upload a video file
+     *     summary: Create a video file and get the ID
      *     tags: [videos]
      *     responses:
      *       201:
@@ -53,6 +53,7 @@ export class VideoController implements IController {
      *           application/json:
      *             schema:
      *               type: string
+     *               example: 6519b3ba5dd8017a501d0b92
      *       500:
      *         description: File upload failed     
     */
@@ -65,7 +66,7 @@ export class VideoController implements IController {
 
     /**
      * @swagger
-     * /api/videos/:id:
+     * /api/videos/{id}:
      *   put:
      *     summary: Upload a video chunk in Base64 format
      *     tags: [videos]
@@ -92,6 +93,7 @@ export class VideoController implements IController {
      *           application/json:
      *             schema:
      *               type: string
+     *               example: Successfully merged video
      *       500:
      *         description: File upload failed
     */
@@ -119,7 +121,7 @@ export class VideoController implements IController {
 
     /**
      * @swagger
-     * /api/videos/:id/formData:
+     * /api/videos/{id}/formData:
      *   put:
      *     summary: Upload a video chunk in Blob format
      *     tags: [videos]
@@ -175,7 +177,7 @@ export class VideoController implements IController {
 
     /**
      * @swagger
-     * /api/videos/:id/end_recording:
+     * /api/videos/{id}/end_recording:
      *   put:
      *     summary: Finish the recording and generate the transcription
      *     tags: [videos]
@@ -239,7 +241,7 @@ export class VideoController implements IController {
 
     /**
      * @swagger
-     * /api/videos/:id:
+     * /api/videos/{id}:
      *   delete:
      *     summary: Delete a video by ID
      *     tags: [videos]
@@ -283,9 +285,18 @@ export class VideoController implements IController {
      *               items:
      *                 type: object
      *                 properties:
-     *                   id: string
-     *                   filename: string
-     *                   transcription: string
+     *                   id:
+     *                     type: string
+     *                     description: The unique identifier of the video.
+     *                     example: abc123
+     *                   filename:
+     *                     type: string
+     *                     description: The name of the video file.
+     *                     example: video.mp4
+     *                   transcription:
+     *                     type: string
+     *                     description: The transcription of the video.
+     *                     example: This is a sample transcription.
      *       500:
      *         description: Unexpected error
     */
@@ -301,7 +312,7 @@ export class VideoController implements IController {
 
     /**
      * @swagger
-     * /api/videos/:id:
+     * /api/videos/{id}:
      *   get:
      *     summary: Get a video by ID
      *     tags: [videos]
@@ -318,14 +329,24 @@ export class VideoController implements IController {
      *             schema:
      *               type: object
      *               properties:
-     *                 id: string
-     *                 filename: string
-     *                 transcription: string
+     *                 id:
+     *                   type: string
+     *                   description: The unique identifier of the video.
+     *                   example: abc123
+     *                 filename:
+     *                   type: string
+     *                   description: The name of the video file.
+     *                   example: video.mp4
+     *                 transcription:
+     *                   type: string
+     *                   description: The transcription of the video.
+     *                   example: This is a sample transcription.
      *       500:
      *         description: Unexpected error
     */
     private _getSingleVideo: RequestHandler = async (req, res) => {
         const { id } = req.params
+        console.log(id)
         const video = await this._videoService.findOne(id)
         if (!video) throw new NotFoundError()
         res.json({
